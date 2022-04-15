@@ -1,0 +1,9 @@
+{
+  "name": "mirth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mirth.js",
+  "keywords": [],
+  "author": "cm(chenzihandawang@163.com)",
+  "license": "MIT"
+}
