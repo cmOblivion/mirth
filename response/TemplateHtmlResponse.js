@@ -1,5 +1,5 @@
 const Response = require('./Response');
-const DartViewEngine = require('./../DartViewEngine');
+const MirthViewEngine = require('./../MirthViewEngine');
 
 function TemplateHtmlResponse(options){
 	this.setOptions(options,{
@@ -28,6 +28,6 @@ TemplateHtmlResponse.prototype.render = function(req,res){
 	res.send(this.templateEngine.render(this.filepath,data,this.templateOptions));
 }
 
-TemplateHtmlResponse.prototype.templateEngine = DartViewEngine;
+TemplateHtmlResponse.prototype.templateEngine = MirthViewEngine;
 
 module.exports = TemplateHtmlResponse;
