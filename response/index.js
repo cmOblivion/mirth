@@ -6,4 +6,4 @@ const Response = require('./Response'),
 exports.Response = Response;
 exports.FileResponse = FileResponse;
 exports.HtmlResponse = HtmlResponse;
-exports.TemplateHtmlResponse = TemplateHtmlResponse;
+exports.TemplateHtmlResponse = TemplateHtmlResponse.TemplateHtmlResponse;

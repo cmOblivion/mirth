@@ -7,7 +7,7 @@ var sv = mirth.Server()
 			filepath:'tmp/index.html',
 			data(req,res){
 				return {
-					isMobile:req.isMobile
+					
 				};
 			}
 		})

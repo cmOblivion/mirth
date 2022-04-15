@@ -1,6 +1,10 @@
 const Response = require('./Response');
 const MirthViewEngine = require('./../MirthViewEngine');
 
+engine = {
+	engine:MirthViewEngine
+}
+
 function TemplateHtmlResponse(options){
 	this.setOptions(options,{
 		filepath:'',
@@ -25,9 +29,8 @@ TemplateHtmlResponse.prototype.render = function(req,res){
 		data = this.data;
 	}
 	res.head();
-	res.send(this.templateEngine.render(this.filepath,data,this.templateOptions));
+	res.send(engine.engine.render(this.filepath,data,this.templateOptions));
 }
 
-TemplateHtmlResponse.prototype.templateEngine = MirthViewEngine;
-
-module.exports = TemplateHtmlResponse;
+exports.TemplateHtmlResponse = TemplateHtmlResponse;
+exports.engine = engine;

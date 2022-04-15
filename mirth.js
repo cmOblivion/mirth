@@ -4,7 +4,9 @@ const http = require('http'),
     response = require('./response'),
     util = require('./util'),
     FileRouter = require('./FileRouter'),
-    middlewares = require('./middlewares');
+    middlewares = require('./middlewares'),
+    TemplateHtmlResponse = require('./response/TemplateHtmlResponse'),
+    MirthViewEngine = require('./MirthViewEngine');
 
 function Server(options){
     var sv = {
@@ -100,6 +102,11 @@ function Server(options){
         sv.middlewares.push(content);
     }
     sv.useMiddleware = useMiddleware;
+
+    function setViewEngine(options){
+        TemplateHtmlResponse.engine.engine = options.engine;
+    }
+    sv.setViewEngine = setViewEngine;
 
     function init(){
         if(sv.options.useCookie){
