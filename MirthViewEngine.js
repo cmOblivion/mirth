@@ -10,7 +10,7 @@ function renderTmp(rule,content){
 
 module.exports = {
 	name:'DartViewEngine',
-	render:function(filepath,dt,options){
+	render:function(request,response,filepath,dt,options){
 		function envirement(){
 			var data = dt;
 			function ev(str){

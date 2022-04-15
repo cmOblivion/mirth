@@ -29,7 +29,7 @@ TemplateHtmlResponse.prototype.render = function(req,res){
 		data = this.data;
 	}
 	res.head();
-	res.send(engine.engine.render(this.filepath,data,this.templateOptions));
+	res.send(engine.engine.render(req,res,this.filepath,data,this.templateOptions));
 }
 
 exports.TemplateHtmlResponse = TemplateHtmlResponse;
