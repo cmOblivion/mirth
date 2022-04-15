@@ -9,7 +9,7 @@ function renderTmp(rule,content){
 }
 
 module.exports = {
-	name:'MirthViewEngine',
+	name:'DartViewEngine',
 	render:function(filepath,dt,options){
 		function envirement(){
 			var data = dt;

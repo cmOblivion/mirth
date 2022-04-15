@@ -1,9 +1,9 @@
-const mirth = require('./../mirth');
+const dart = require('./../dart');
 
-var sv = mirth.Server()
+var sv = dart.Server()
 	.route({
 		path:/^\/$/i,
-		render:new mirth.response.TemplateHtmlResponse({
+		render:new dart.response.TemplateHtmlResponse({
 			filepath:'tmp/index.html',
 			data(req,res){
 				return {
