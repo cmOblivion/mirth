@@ -3,27 +3,40 @@
 <head>
 	<meta charset="utf-8">
 	<title><< block title >>Mirth<< endblock >></title>
-	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/theme-chalk/index.css">
-	<script src="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/index.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
+	<script src="//cdn.jsdelivr.net/npm/element-plus"></script>
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/element-plus/dist/index.css">
 	<< block head >><< endblock >>
 </head>
 <body>
 	<div id="app">
 		<el-container>
-			<el-head>
-				<el-menu>
+			<el-header>
+				<el-menu mode="horizontal" @select="menuSelect" :default-active="menuIndex">
+					<el-menu-item>首页</el-menu-item>
 				</el-menu>
 			</el-head>
+			<el-main>
+				<< block content >><< endblock >>
+			</el-main>
+			<el-footer>
+			</el-footer>
 		</el-container>
 	</div>
 	<script>
-		var app = new Vue({
-			el:'#app',
-			data:{
+			var App = {
+			data(){
+				return {
+					menuIndex:'1'
+				};
+			},
+			methods:{
+				menuSelect(key,keyPath){
 
+				}
 			}
-		});
+		};
+		var app = Vue.createApp(App).use(ElementPlus).mount('#app');
 	</script>
 </body>
 </html>
