@@ -1,5 +1,5 @@
 const Response = require('./Response');
-const MirthViewEngine = require('./../MirthViewEngine');
+const MirthViewEngine = require('./../builtin/MirthViewEngine');
 
 engine = {
 	engine:MirthViewEngine

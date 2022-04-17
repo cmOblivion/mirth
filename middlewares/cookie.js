@@ -2,7 +2,7 @@ const http = require('http');
 
 module.exports = {
 	type:'middleware',
-	content:function(req,res){
+	content:function(req,res,next){
 		req.cookie = {};
 		let ckstr = req.headers.cookie;
 		if(ckstr){
@@ -14,6 +14,7 @@ module.exports = {
 				req.cookie[arr[0]] = arr[1];
 			});
 		}
+		next();
 	}
 }
 

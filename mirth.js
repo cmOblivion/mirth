@@ -1,12 +1,12 @@
 const http = require('http'),
     url = require('url'),
-    Url = require('./Url'),
+    Url = require('./builtin/Url'),
     response = require('./response'),
     util = require('./util'),
-    FileRouter = require('./FileRouter'),
+    FileRouter = require('./builtin/FileRouter'),
     middlewares = require('./middlewares'),
     TemplateHtmlResponse = require('./response/TemplateHtmlResponse'),
-    MirthViewEngine = require('./MirthViewEngine');
+    MirthViewEngine = require('./builtin/MirthViewEngine');
 
 function Server(options){
     var sv = {
@@ -33,16 +33,18 @@ function Server(options){
         req.url = url.parse(req.url,true);
         req.method = req.method.toLowerCase();
         let success = false;
-        var i = 0;
         var ifContinue = true;
 
-        while(i<sv.middlewares.length){
-            if(sv.middlewares[i](req,res)){
-                ifContinue = false;
-                break;
-            }
+        var i = 0;
+        function next(){
             i++;
+            if(i<sv.middlewares.length){
+                sv.middlewares[i](req,res,next);
+            } else {
+                return;
+            }
         }
+
         if(ifContinue){
             for(let i=0;i<sv.router.length;i++){
                 if(!sv.router[i].route(req,res)){
@@ -158,3 +160,4 @@ exports.response = response;
 exports.util = util;
 exports.FileRouter = FileRouter;
 exports.middlewares = middlewares;
+exports.MirthViewEngine = MirthViewEngine;
