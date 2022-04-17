@@ -5,5 +5,8 @@
   "main": "mirth.js",
   "keywords": [],
   "author": "cm(chenzihandawang@163.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "body": "^5.1.0"
+  }
 }

@@ -12,7 +12,8 @@ module.exports = {
 	name:'DartViewEngine',
 	render:function(request,response,filepath,dt,options){
 		function envirement(){
-			var data = dt;
+			let req = request,res = response;
+			let data = dt;
 			function ev(str){
 				return eval(str);
 			}

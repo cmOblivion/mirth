@@ -2,10 +2,10 @@ const mirth = require('./../mirth');
 
 var sv = mirth.Server()
 	.route({
-		path:/^\/$/i,
-		render:new mirth.response.HtmlResponse({
-			filepath:'tmp/index.html'
-		})
+		path: /^\/$/i,
+		render: function (req,res) {
+			console.log(req.body);
+		}
 	})
 	.static()
 	.start();

@@ -4,7 +4,6 @@ const http = require('http'),
     response = require('./response'),
     util = require('./util'),
     FileRouter = require('./builtin/FileRouter'),
-    middlewares = require('./middlewares'),
     TemplateHtmlResponse = require('./response/TemplateHtmlResponse'),
     MirthViewEngine = require('./builtin/MirthViewEngine');
 
@@ -21,8 +20,11 @@ function Server(options){
             status:404
         }),
         autoInit:true,
-        useCookie:true,
-        useCheckMobile:true,
+        autoMiddlewares:[
+            './middlewares/cookie',
+            './middlewares/checkMobile',
+            './middlewares/body-parser'
+        ]
     });
     sv.server = new http.Server();
 
@@ -33,7 +35,6 @@ function Server(options){
         req.url = url.parse(req.url,true);
         req.method = req.method.toLowerCase();
         let success = false;
-        var ifContinue = true;
 
         var i = 0;
         function next(){
@@ -41,28 +42,26 @@ function Server(options){
             if(i<sv.middlewares.length){
                 sv.middlewares[i](req,res,next);
             } else {
-                return;
+                for(let i=0;i<sv.router.length;i++){
+                    if(!sv.router[i].route(req,res)){
+                        success = true;
+                        break;
+                    }
+                }
+                if(!res.ended){
+                    res.ended = false;
+                    if(success){
+                        res.end();
+                    } else {
+                        sv.options.errRes.render(req,res);
+                        if(!res.ended) res.end();
+                    }
+                }
+
             }
         }
+        next();
 
-        if(ifContinue){
-            for(let i=0;i<sv.router.length;i++){
-                if(!sv.router[i].route(req,res)){
-                    success = true;
-                    break;
-                }
-            }
-            if(!res.ended){
-                res.ended = false;
-                if(success){
-                    res.end();
-                } else {
-                    sv.options.errRes.render(req,res);
-                    if(!res.ended) res.end();
-                }
-            }
-
-        }
     }
     sv.server.on('request',onRequest);
 
@@ -86,11 +85,14 @@ function Server(options){
     sv.static = static;
 
     function use(options){
+        if(typeof options == 'string'){
+            options = require(options);
+        }
         options.setOptions(options,{
             type:'middleware',
-            content:function(req,res){}
+            content:function(req,res,next){}
         });
-        if(options.type == 'middleware'){
+        if(options.type === 'middleware'){
             sv.useMiddleware(options.content);
         }
         return sv;
@@ -98,9 +100,6 @@ function Server(options){
     sv.use = use;
 
     function useMiddleware(content){
-        if(typeof content == 'string'){
-            content = require(content);
-        }
         sv.middlewares.push(content);
     }
     sv.useMiddleware = useMiddleware;
@@ -111,13 +110,10 @@ function Server(options){
     sv.setViewEngine = setViewEngine;
 
     function init(){
-        if(sv.options.useCookie){
-            sv.use(middlewares.cookie);
-            delete sv.options.useCookie;
-        }
-        if(sv.options.useCheckMobile){
-            sv.use(middlewares.checkMobile);
-            delete sv.options.useCheckMobile;
+        for(let i in sv.options.autoMiddlewares){
+            if(sv.options.autoMiddlewares.hasOwnProperty(i)){
+                sv.use(sv.options.autoMiddlewares[i]);
+            }
         }
     }
     sv.init = init;
@@ -159,5 +155,4 @@ exports.Url = Url;
 exports.response = response;
 exports.util = util;
 exports.FileRouter = FileRouter;
-exports.middlewares = middlewares;
 exports.MirthViewEngine = MirthViewEngine;
