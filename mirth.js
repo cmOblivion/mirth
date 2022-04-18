@@ -24,6 +24,9 @@ function Server(options){
             './middlewares/cookie',
             './middlewares/checkMobile',
             './middlewares/body-parser'
+        ],
+        useMiddlewares:[
+            
         ]
     });
     sv.server = new http.Server();
@@ -57,7 +60,6 @@ function Server(options){
                         if(!res.ended) res.end();
                     }
                 }
-
             }
         }
         next();
@@ -115,6 +117,11 @@ function Server(options){
                 sv.use(sv.options.autoMiddlewares[i]);
             }
         }
+        for(let i in sv.options.useMiddlewares){
+            if(sv.options.useMiddlewares.hasOwnProperty(i)){
+                sv.use(sv.options.useMiddlewares[i]);
+            }
+        }
     }
     sv.init = init;
     if(sv.options.autoInit) init();
@@ -123,13 +130,13 @@ function Server(options){
 }
 
 Object.prototype.setOptions = function (data,options) {
-    if(data){
+    if(data!==undefined){
         for(let i in data){
-            this[i] = data[i];
+            if(data.hasOwnProperty(i)) this[i] = data[i];
         }
     }
     for(let opt in options){
-        if(!this[opt]){
+        if(this[opt]===undefined){
             this[opt] = options[opt];
         }
     }

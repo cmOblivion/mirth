@@ -9,8 +9,8 @@ function renderTmp(rule,content){
 }
 
 module.exports = {
-	name:'DartViewEngine',
-	render:function(request,response,filepath,dt,options){
+	name:'MirthViewEngine',
+	render:function(request,response,filepath,dt){
 		function envirement(){
 			let req = request,res = response;
 			let data = dt;
@@ -59,7 +59,18 @@ module.exports = {
 			]
 		},
 		{
-			template:/<<:(.*):>>/is,
+			template:/<<\? (\w*) >>((?:(?!<<\?>>).)*)<<\?>>/is,
+			action:function(match,content){
+				console.log(match);
+				if(content.eval(match[1])){
+					content.text = content.text.replace(this.template,match[2]);
+				} else {
+					content.text = content.text.replace(this.template,'');
+				}
+			}
+		},
+		{
+			template:/<<:(.*)>>/is,
 			action:function(match,content){
 				content.text = content.text.replace(this.template,'');
 				content.eval(match[1]);

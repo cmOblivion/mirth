@@ -3,9 +3,9 @@ const mirth = require('./../mirth');
 var sv = mirth.Server()
 	.route({
 		path: /^\/$/i,
-		render: function (req,res) {
-			console.log(req.body);
-		}
+		render: new mirth.response.TemplateHtmlResponse({
+			filepath:'tmp/index.html'
+		})
 	})
 	.static()
 	.start();

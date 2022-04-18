@@ -12,6 +12,7 @@ module.exports = {
             body(req,res,parse);
         } else {
             req.body = {};
+            next();
         }
     }
 }
