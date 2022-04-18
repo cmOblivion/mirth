@@ -59,9 +59,8 @@ module.exports = {
 			]
 		},
 		{
-			template:/<<\? (\w*) >>((?:(?!<<\?>>).)*)<<\?>>/is,
+			template:/<<\? (.*) >>((?:(?!<<\?>>)[\w\W])*)<<\?>>/i,
 			action:function(match,content){
-				console.log(match);
 				if(content.eval(match[1])){
 					content.text = content.text.replace(this.template,match[2]);
 				} else {

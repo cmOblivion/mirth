@@ -11,7 +11,8 @@ function Server(options){
     var sv = {
         options:{},
         router:[],
-        middlewares:[]
+        middlewares:[],
+        applications:[],
     };
     sv.options.setOptions(options,{
         port:80,
@@ -27,7 +28,8 @@ function Server(options){
         ],
         useMiddlewares:[
             
-        ]
+        ],
+
     });
     sv.server = new http.Server();
 
@@ -63,7 +65,6 @@ function Server(options){
             }
         }
         next();
-
     }
     sv.server.on('request',onRequest);
 
@@ -94,17 +95,45 @@ function Server(options){
             type:'middleware',
             content:function(req,res,next){}
         });
-        if(options.type === 'middleware'){
-            sv.useMiddleware(options.content);
-        }
+        useOrInstall(options);
         return sv;
     }
     sv.use = use;
 
+    //安装中间件实际代码
     function useMiddleware(content){
         sv.middlewares.push(content);
     }
     sv.useMiddleware = useMiddleware;
+
+    function install(app,options){
+        if(typeof app == 'string'){
+            app = require(app);
+        }
+        app.setOptions(app,{
+            type:'application',
+            content:function(req,res,next){}
+        });
+        useOrInstall(app,options);
+
+        return sv;
+    }
+    sv.install = install;
+
+    //安装应用实际代码
+    function installApplication(content,options){
+        sv.applications.push(content);
+        content.install(sv,{}.setOptions(options,content.options));
+    }
+    sv.installApplication = installApplication;
+
+    function useOrInstall(c,options){
+        if(c.type === 'middleware'){
+            sv.useMiddleware(c.content);
+        } else if(c.type === 'application') {
+            sv.installApplication(c.content,options);
+        }
+    }
 
     function setViewEngine(options){
         TemplateHtmlResponse.engine.engine = options.engine;
@@ -140,6 +169,7 @@ Object.prototype.setOptions = function (data,options) {
             this[opt] = options[opt];
         }
     }
+    return this;
 }
 
 http.ServerResponse.prototype.head = function(){
