@@ -5,7 +5,13 @@ const http = require('http'),
     util = require('./util'),
     FileRouter = require('./builtin/FileRouter'),
     TemplateHtmlResponse = require('./response/TemplateHtmlResponse'),
-    MirthViewEngine = require('./builtin/MirthViewEngine');
+    MirthViewEngine = require('./builtin/MirthViewEngine'),
+    fs = require('fs'),
+    path = require('path');
+
+var appList = (function(){
+    return JSON.parse(fs.readFileSync(path.join(__dirname,'/applications/appList.json')));
+})();
 
 function Server(options){
     var sv = {
@@ -107,8 +113,12 @@ function Server(options){
     sv.useMiddleware = useMiddleware;
 
     function install(app,options){
-        if(typeof app == 'string'){
-            app = require(app);
+        if(typeof app === 'string'){
+            if(appList[app]){
+                app = require(appList[app]);
+            } else {
+                app = require(app);
+            }
         }
         app.setOptions(app,{
             type:'application',
