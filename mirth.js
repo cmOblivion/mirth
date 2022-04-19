@@ -18,7 +18,7 @@ function Server(options){
         options:{},
         router:[],
         middlewares:[],
-        applications:[],
+        applications:{},
     };
     sv.options.setOptions(options,{
         port:80,
@@ -35,7 +35,6 @@ function Server(options){
         useMiddlewares:[
             
         ],
-
     });
     sv.server = new http.Server();
 
@@ -132,8 +131,17 @@ function Server(options){
 
     //安装应用实际代码
     function installApplication(content,options){
-        sv.applications.push(content);
+        if(content.dependencies){
+            for(let i in content.dependencies){
+                if(content.dependencies.hasOwnProperty(i)){
+                    if(!sv.applications[content.dependencies[i]]){
+                        sv.install(content.dependencies[i]);
+                    }
+                }
+            }
+        }
         content.install(sv,{}.setOptions(options,content.options));
+        sv.applications[content.name] = content;
     }
     sv.installApplication = installApplication;
 

@@ -6,7 +6,7 @@ Mirth是一个开源的基于node.js的web框架，由cm开发，基于MIT开源
 
 ## 文档
 
-[详细文档](https://cmoblivion.github.io/#/doc)
+[详细文档](https://cmoblivion.github.io/#/doc/)
 
 ## 快速开始
 
