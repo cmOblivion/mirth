@@ -1,6 +1,5 @@
 const mirth = require('./../mirth');
 
-var sv = mirth.Server()
-	.install('db')
-	.static()
-	.start();
+var server = new mirth.Server()
+    .install('db')
+    .start();

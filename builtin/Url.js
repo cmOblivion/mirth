@@ -22,6 +22,7 @@ Url.prototype.route = function(req,res){
 		return this.response(req,res);
 	}
 }
+
 Url.prototype.response = function(req,res){
 	let matchResult = req.url.path.match(this.path);
 	if(matchResult){
