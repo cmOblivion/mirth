@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Mirth</title>
-</head>
-<body>
-	<h1><<= data.a >></h1>
-</body>
-</html>
+<< extend 'tmp/base.html' >>
+<< block content >>
+<< for i in data.dt >>
+<h1><<= i >></h1>
+<< endfor >>
+<< endblock >>

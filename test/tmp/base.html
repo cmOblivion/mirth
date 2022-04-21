@@ -3,9 +3,10 @@
 <head>
 	<meta charset="utf-8">
 	<title><< block title >>Mirth<< endblock >></title>
-	<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
-	<script src="//cdn.jsdelivr.net/npm/element-plus"></script>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/element-plus/dist/index.css">
+	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.15.6/lib/theme-chalk/index.css">
+	<script src="https://cdn.jsdelivr.net/npm/element-ui/lib/index.js"></script>
+	<link rel="shortcut icon" href="https://cdn.jsdelivr.net/npm/mirthjs/test/static/mirth.png">
 	<< block head >><< endblock >>
 </head>
 <body>
@@ -13,7 +14,14 @@
 		<el-container>
 			<el-header>
 				<el-menu mode="horizontal" @select="menuSelect" :default-active="menuIndex">
-					<el-menu-item>首页</el-menu-item>
+					<el-menu-item index="1">首页</el-menu-item>
+					<el-menu-item index="2">圈子</el-menu-item>
+					<<? data.logined >>
+					<el-menu-item index="3" style="float: right;"><<= data.username >></el-menu-item>
+					<<!>>
+					<el-menu-item index="3" style="float: right;">登录</el-menu-item>
+					<el-menu-item index="4" style="float: right;">注册</el-menu-item>
+					<<?>>
 				</el-menu>
 			</el-head>
 			<el-main>
@@ -24,19 +32,35 @@
 		</el-container>
 	</div>
 	<script>
-			var App = {
-			data(){
-				return {
-					menuIndex:'1'
-				};
+		function mp(url){
+			window.location.href = url;
+		}
+		var app = new Vue({
+			el:'#app',
+			data:{
+				menuIndex:1,
+				<< block data >><< endblock >>
 			},
 			methods:{
-				menuSelect(key,keyPath){
-
-				}
+				menuSelect(i){
+					switch(i){
+						case '1':
+							mp('/');
+							break;
+						case '2':
+							mp('/bbs');
+							break;
+						case '3':
+							mp('/login');
+							break;
+						case '4':
+							mp('/register');
+							break
+					}
+				},
+				<< block methods >><< endblock >>
 			}
-		};
-		var app = Vue.createApp(App).use(ElementPlus).mount('#app');
+		});
 	</script>
 </body>
 </html>

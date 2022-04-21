@@ -1,5 +1,4 @@
 const Response = require('./Response'),
-	util = require('./../util'),
 	fs = require('fs');
 
 function FileResponse(options){

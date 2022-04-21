@@ -1,0 +1,4 @@
+{
+	"db":"./applications/db",
+	"MirthTemplateEngine":"./applications/MirthTemplateEngine"
+}

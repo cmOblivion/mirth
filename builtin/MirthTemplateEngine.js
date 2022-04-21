@@ -9,11 +9,12 @@ function renderTmp(rule,content){
 }
 
 module.exports = {
-	name:'MirthViewEngine',
 	render:function(request,response,filepath,dt){
 		function envirement(){
-			let req = request,res = response;
-			let data = dt;
+			var req = request
+				,res = response
+				,data = dt
+				,ct = {};
 			function ev(str){
 				return eval(str);
 			}
@@ -27,7 +28,7 @@ module.exports = {
 		return content.text;
 	},
 	rules:[
-		{   /* 继承模板 */
+		{   /* 继承 */
 			template:/<< extend ['"](.*)['"] >>/i,
 			action:function(match,content){
 				content.blocks = {};
@@ -42,7 +43,7 @@ module.exports = {
 				}
 			},
 			rules:[
-				{	/* 块式继承模板 */
+				{	/* 块式继承 */
 					template:/<< block (\w+) >>((?:(?!<< endblock >>).)*)<< endblock >>/is,
 					action:function(match,content){
 						if(!content.isEnd){
@@ -59,6 +60,43 @@ module.exports = {
 			]
 		},
 		{
+			/* for 循环 */
+			template:/<< for (.*) in (.*) >>((?:(?!<< endfor >>)[\w\W])*)<< endfor >>/i,
+			action:function(match,content){
+				var str = ''
+					,dt = content.eval(match[2])
+					,m = 1
+					,c;
+				for(let i in dt){
+					if(dt.hasOwnProperty(i)){
+						c = ''+dt[i];
+						while(/(?<!\\)'/.test(c)){
+							c = c.replace(/(?<!\\)'/,"\\'");
+						}
+						while(/(?<!\\)"/.test(c)){
+							c = c.replace(/(?<!\\)"/,'\\"');
+						}
+						content.eval('ct.'+match[1]+m+"='"+c+"';");
+						str += match[3].replace(new RegExp(match[1]),'ct.'+match[1]+m);
+						m++;
+					}
+				}
+				content.text = content.text.replace(this.template,str);
+			}
+		},
+		{
+			/* if else 条件句 */
+			template:/<<\? (.*) >>((?:(?!<<\!>>)[\w\W])*)<<\!>>((?:(?!<<\?>>)[\w\W])*)<<\?>>/i,
+			action:function(match,content){
+				if(content.eval(match[1])){
+					content.text = content.text.replace(this.template,match[2]);
+				} else {
+					content.text = content.text.replace(this.template,match[3]);
+				}
+			}
+		},
+		{
+			/* if 条件句 */
 			template:/<<\? (.*) >>((?:(?!<<\?>>)[\w\W])*)<<\?>>/i,
 			action:function(match,content){
 				if(content.eval(match[1])){
@@ -69,13 +107,15 @@ module.exports = {
 			}
 		},
 		{
-			template:/<<:(.*)>>/is,
+			/* 直接执行js代码 */
+			template:/<<:((?:(?!>>).)*)>>/is,
 			action:function(match,content){
 				content.text = content.text.replace(this.template,'');
 				content.eval(match[1]);
 			}
 		},
 		{
+			/* 输出数据 */
 			template:/<<= (.*) >>/i,
 			action:function(match,content){
 				content.text = content.text.replace(this.template,content.eval(match[1]));

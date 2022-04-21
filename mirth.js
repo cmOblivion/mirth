@@ -2,16 +2,22 @@ const http = require('http'),
     url = require('url'),
     Url = require('./builtin/Url'),
     response = require('./response'),
-    util = require('./util'),
     FileRouter = require('./builtin/FileRouter'),
     TemplateHtmlResponse = require('./response/TemplateHtmlResponse'),
-    MirthViewEngine = require('./builtin/MirthViewEngine'),
     fs = require('fs'),
     path = require('path');
 
 var appList = (function(){
-    return JSON.parse(fs.readFileSync(path.join(__dirname,'/applications/appList.json')));
+    return JSON.parse(fs.readFileSync(path.join(__dirname,'/appList.json')));
 })();
+
+var mirth = {
+    Server:Server,
+    Url:Url,
+    response:response,
+    FileRouter:FileRouter,
+    appList:appList,
+};
 
 function Server(options){
     var sv = {
@@ -30,11 +36,12 @@ function Server(options){
         autoMiddlewares:[
             './middlewares/cookie',
             './middlewares/checkMobile',
-            './middlewares/body-parser'
+            './middlewares/body-parser',
         ],
-        useMiddlewares:[
-            
-        ],
+        useMiddlewares:[],
+        autoApplications:[
+            'MirthTemplateEngine',
+        ]
     });
     sv.server = new http.Server();
 
@@ -46,7 +53,7 @@ function Server(options){
         req.method = req.method.toLowerCase();
         let success = false;
 
-        var i = 0;
+        var i = -1;
         function next(){
             i++;
             if(i<sv.middlewares.length){
@@ -140,7 +147,7 @@ function Server(options){
                 }
             }
         }
-        content.install(sv,{}.setOptions(options,content.options));
+        content.install(sv,mirth,{}.setOptions(options,content.options));
         sv.applications[content.name] = content;
     }
     sv.installApplication = installApplication;
@@ -153,11 +160,6 @@ function Server(options){
         }
     }
 
-    function setViewEngine(options){
-        TemplateHtmlResponse.engine.engine = options.engine;
-    }
-    sv.setViewEngine = setViewEngine;
-
     function init(){
         for(let i in sv.options.autoMiddlewares){
             if(sv.options.autoMiddlewares.hasOwnProperty(i)){
@@ -167,6 +169,11 @@ function Server(options){
         for(let i in sv.options.useMiddlewares){
             if(sv.options.useMiddlewares.hasOwnProperty(i)){
                 sv.use(sv.options.useMiddlewares[i]);
+            }
+        }
+        for(let i in sv.options.autoApplications){
+            if(sv.options.autoApplications.hasOwnProperty(i)){
+                sv.install(sv.options.autoApplications[i]);
             }
         }
     }
@@ -205,9 +212,4 @@ Function.prototype.render = function(req,res){
     return this(req,res);
 }
 
-exports.Server = Server;
-exports.Url = Url;
-exports.response = response;
-exports.util = util;
-exports.FileRouter = FileRouter;
-exports.MirthViewEngine = MirthViewEngine;
+module.exports = mirth;

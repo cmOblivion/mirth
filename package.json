@@ -1,6 +1,6 @@
 {
   "name": "mirthjs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "mirth.js",
   "keywords": [],
@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "body": "^5.1.0",
+    "eccrypto": "^1.1.6",
     "mongodb": "^4.5.0"
   }
 }
