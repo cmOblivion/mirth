@@ -1,5 +1,7 @@
 # Mirth.js
 
+# 已停止维护！！！！
+
 ## 介绍
 
 Mirth是一个开源的基于node.js的web框架，由cm开发，基于MIT开源协议，Github仓库地址：[Mirth](https://github.com/cmOblivion/mirth/)，于2022年4月初开始开发。
